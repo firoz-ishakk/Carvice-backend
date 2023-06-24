@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Service = require("../models/servicesModel")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Mechanic = require("../models/mechanicModel")
 const authmiddleware = require("../middlewares/authMiddlewares")
 
 //registeration of user
@@ -91,27 +92,34 @@ const getUserById = async(req,res)=>{
 }
 
 const carService = async(req,res)=>{
-  const service = await Service.findOne({name:req.body.name})
+  // const service = await Service.findOne({name:req.body.name})
   try {
-    if(service){
-      console.log(service,"service is available")
-      res
-      .status(200)
-      .send({message:"service available thru axios"})
-    }else{
+    // if(service){
+    //   console.log(service,"service is available")
+    //   res
+    //   .status(200)
+    //   .send({message:"service available thru axios"})
+    // }else{
+      console.log(req.body)
       const serviceAction = await Service({
         name : req.body.name,
         numberplate : req.body.numberplate,
         phone : req.body.number,
         address : req.body.address,
         pickup : req.body.pickup, 
-        service  : req.body.service
+        service  : req.body.service,
+        user : req.body.userid
       })
+        await User.findByIdAndUpdate(req.body.userid,{
+          $push: {Mybookings:serviceAction._id}
+        })
+
+      console.log(serviceAction,"sad")
       res
       .status(200)
       .send({message:"done bwoi",success:true})
       const servicedatabase = await serviceAction.save()
-    }
+    // }
   } catch (error) {
     console.log(error)
     res
@@ -121,9 +129,33 @@ const carService = async(req,res)=>{
   
 };
 
+const mechanicService = async(req,res)=>{
+  console.log(req.body)
+  try {
+    const mechanicData =
+    await Mechanic({
+      name : req.body.name,
+      carname: req.body.carname,
+      numberplate : req.body.carnumber,
+      phone : req.body.number,
+      address: req.body.address,
+      user : req.body.userid,
+      issue : req.body.issues
+    })
+    console.log(mechanicData)
+    res
+    .status(200)
+    send({message:"Done",success : true})
+    await Mechanic.save()
+  } catch (error) {
+    console.log("something went wrnog while fetching/sending datas")
+  }
+}
+
 module.exports = {
   userRegister,
   userLogin,
   carService,
-  getUserById
+  getUserById,
+  mechanicService
 };

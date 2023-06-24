@@ -32,6 +32,10 @@ const serviceSchema = new mongoose.Schema({
     service:    {
         type:String,
         // required:true
+    },
+    user:{
+        type:ObjectId,
+        ref : "User"
     }
 
 })

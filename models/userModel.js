@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String
     },
+    Mybookings:[{
+        type:ObjectId,
+        ref:"Service"
+    }],
     token:{
         type:String
     }
