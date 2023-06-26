@@ -92,14 +92,8 @@ const getUserById = async(req,res)=>{
 }
 
 const carService = async(req,res)=>{
-  // const service = await Service.findOne({name:req.body.name})
   try {
-    // if(service){
-    //   console.log(service,"service is available")
-    //   res
-    //   .status(200)
-    //   .send({message:"service available thru axios"})
-    // }else{
+    
       console.log(req.body)
       const serviceAction = await Service({
         name : req.body.name,
@@ -130,10 +124,8 @@ const carService = async(req,res)=>{
 };
 
 const mechanicService = async(req,res)=>{
-  console.log(req.body)
   try {
-    const mechanicData =
-    await Mechanic({
+    const mechanicData = new Mechanic({
       name : req.body.name,
       carname: req.body.carname,
       numberplate : req.body.carnumber,
@@ -142,16 +134,17 @@ const mechanicService = async(req,res)=>{
       user : req.body.userid,
       issue : req.body.issues
     })
-    console.log(mechanicData)
-    res
+    res 
     .status(200)
-    send({message:"Done",success : true})
-    await Mechanic.save()
+    .send({message:"Done",success : true})
+    await mechanicData.save()
   } catch (error) {
-    console.log("something went wrnog while fetching/sending datas")
+  toast.error("something went wrong")
   }
 }
-
+const editUser = async(req,res)=>{
+  const user = await User.findByIdAndUpdate({_id})
+}
 module.exports = {
   userRegister,
   userLogin,

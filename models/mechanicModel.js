@@ -10,7 +10,7 @@ const mechanicSchema = new mongoose.Schema({
         type:String,
     },
     numberplate:{
-        type:Number,
+        type:String,
     },
     phone:{
         type:Number,
@@ -19,7 +19,7 @@ const mechanicSchema = new mongoose.Schema({
         type:String,
     },
     user:{
-        type:ObjectId,
+    type:ObjectId,
         ref:"User"
     },
     issue:{
