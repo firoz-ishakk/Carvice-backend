@@ -40,11 +40,14 @@ const userRegister = async (req, res) => {
 //user login
 const userLogin = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
-    console.log(user,"asdasdasduser")
+    const user = await User.findOne({ email: req.body.email});
+    console.log(user,"user")
     if (!user) {
-      res.status(400).send({ message: "user dose not exist", success: false });
-    } else {
+      res
+      .status(200)
+      .send({ message: "user does not exist", success: false });
+    } 
+    else {
       const isMatch = await bcrypt.compare(req.body.password, user.password);
       if (isMatch) {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -56,13 +59,16 @@ const userLogin = async (req, res) => {
           .send({
             message: "successfully logged in",
             data: token,
+            user,
             success: true,
-            user
           });
       } else {
-        res.status(400).send({ success: false });
+        res
+        .status(200)
+        .send({message:"wrong creds", success:false})
+        console.log("something went wrong")
       }
-    }
+      }
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Something went wrong :(", error });
@@ -86,7 +92,7 @@ const getUserById = async(req,res)=>{
     }
   } catch (error) {
     res
-    .status(500)
+    .status(400)
     .send({message:"something went wrong"})
   }
 }
@@ -142,13 +148,44 @@ const mechanicService = async(req,res)=>{
   toast.error("something went wrong")
   }
 }
+
 const editUser = async(req,res)=>{
-  const user = await User.findByIdAndUpdate({_id})
+  const userId = req.body.userId
+ 
+  try {
+    const userEdit = await User.findByIdAndUpdate(userId,{
+      $set:{
+        name:req.body.name
+      }
+    },{new:true})
+    res
+    .status(200)
+    .send({message:"done",success:true,userEdit})
+    await userEdit.save()
+  } catch (error) {
+    console.log("errrrrror",error)
+  }
+}
+
+const serviceHistory = async(req,res)=>{
+  const userId = req.body.userId
+  console.log(userId,"hi")
+ 
+  const userHistory = await User.findById(userId).populate("Mybookings")
+  console.log(userHistory,"hey")
+  if(userHistory){
+    res
+    .status(200)
+    .send({message:"got em",success:true,data:
+      userHistory.Mybookings[0]})
+  }
 }
 module.exports = {
   userRegister,
   userLogin,
   carService,
   getUserById,
-  mechanicService
+  mechanicService,
+  editUser,
+  serviceHistory,
 };

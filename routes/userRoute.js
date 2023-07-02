@@ -7,8 +7,10 @@ const authmiddleware = require("../middlewares/authMiddlewares")
 router.post("/register",usercontroller.userRegister)
 router.post("/login",usercontroller.userLogin)
 router.post("/get-user-info-by-id",authmiddleware,usercontroller.getUserById)
-router.post("/service",usercontroller.carService)
-router.post("/mechanic",usercontroller.mechanicService)
+router.post("/service",authmiddleware,usercontroller.carService)
+router.post("/mechanic",authmiddleware,usercontroller.mechanicService)
+router.post("/edituser",authmiddleware,usercontroller.editUser)
+router.get("/servicehistory",authmiddleware,usercontroller.serviceHistory)
 
 
 
