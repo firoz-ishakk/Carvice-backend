@@ -3,38 +3,34 @@ const Service = require("../models/servicesModel")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Mechanic = require("../models/mechanicModel")
-const authmiddleware = require("../middlewares/authMiddlewares")
+const otpHelper = require("../util/otp");
+// const authmiddleware = require("../middlewares/authMiddlewares")
 
+
+let data = {}
 //registeration of user
-const userRegister = async (req, res) => {
+const userRegister = async (req,res,cb) => {
+  console.log(req.body,"dfdsf")
   try {
-    console.log("sadasdasdasd");
     const existingUser = await User.findOne({ email: req.body.email });
     console.log(existingUser);
     if (existingUser) {
       console.log(existingUser, "the user exisits");
       return res
-        .status(400)
-        .send({ message: "the user exists", success: false });
+        .status(200)
+        .send({ message: "This user exists", success: false });
     } else {
-      console.log("adi");
-      const password = req.body.password;
-      const salt = await bcrypt.genSalt(10);
-      const hashPassword = await bcrypt.hash(password, salt);
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        phone: req.body.mobilenumber,
-        password: hashPassword,
-        confirm: req.body.cpassword,
-      });
-      console.log(newUser, "hello");
-      await newUser.save();
-      res.status(200).send({ message: "new user registered", success: true });
+      data = req.body
+      const phone = data.phone;
+      otpHelper.sendOtp(phone);
+      cb(true);
+      return res
+      .status(200)
+      .send({message:"ok",success:true})
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Something went wrong here bwoi", error });
+    res.status(400).send({ message: "Something went wrong here", error });
   }
 };
 //user login
@@ -114,7 +110,6 @@ const carService = async(req,res)=>{
           $push: {Mybookings:serviceAction._id}
         })
 
-      console.log(serviceAction,"sad")
       res
       .status(200)
       .send({message:"done bwoi",success:true})
@@ -151,7 +146,6 @@ const mechanicService = async(req,res)=>{
 
 const editUser = async(req,res)=>{
   const userId = req.body.userId
- 
   try {
     const userEdit = await User.findByIdAndUpdate(userId,{
       $set:{
@@ -168,18 +162,57 @@ const editUser = async(req,res)=>{
 }
 
 const serviceHistory = async(req,res)=>{
-  const userId = req.body.userId
-  console.log(userId,"hi")
- 
+  const userId = req.body.userId 
   const userHistory = await User.findById(userId).populate("Mybookings")
   console.log(userHistory,"hey")
   if(userHistory){
     res
     .status(200)
     .send({message:"got em",success:true,data:
-      userHistory.Mybookings[0]})
+      userHistory.Mybookings})
+
+    
   }
 }
+
+const resendOtp = async(req,res)=>{
+  console.log(req.body)
+  const resend = otpHelper.sendOtp()
+}
+
+const otp = async (req,res) => {
+  try {
+    const otp = req.params.otp
+    console.log(req.params.otp,"awwww");
+    console.log(data,"asdasdads")
+    let { name, email, password, cpassword, phone } = data;
+    await otpHelper.verifyOtp(phone, otp).then(async (verification) => {
+      if (verification.status == "approved") {
+        password = await bcrypt.hash(password, 10);
+        confirmpassword = await bcrypt.hash(cpassword, 10);
+        const users = new User({
+          name: name,
+          email: email,
+          password: password,
+          confirmpassword: confirmpassword,
+          mobileno: phone,
+        });
+        users.save()
+          res.
+          status(200)
+          .send({message:"otp ok",success:true})
+          
+          // console.log("dasda")
+      } else if (verification.status == "pending") {
+        console.log("otp not matched");
+      }
+    }); 
+  } catch (error) {
+    console.log(error)
+  }
+ 
+};
+
 module.exports = {
   userRegister,
   userLogin,
@@ -188,4 +221,7 @@ module.exports = {
   mechanicService,
   editUser,
   serviceHistory,
+  otp,
+  resendOtp
+ 
 };
