@@ -17,8 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const userrouter = require("./routes/userRoute")
 const adminrouter = require("./routes/adminRoute")
+const mechanicrouter=  require("./routes/mechanicRoute")
 app.use("/api/user",userrouter)
 app.use("/api/admin",adminrouter)
+app.use("/api/mechanic",mechanicrouter)
 
 
 app.listen(port, ()=> console.log(`listening to port ${port}`))

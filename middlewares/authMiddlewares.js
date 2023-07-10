@@ -14,7 +14,7 @@ module.exports = async(req,res,next)=>{
     } catch (error) {
        
         res.status(401)
-        .send({message:"Error in authorization",error})
+        .send({message:"Error in authorization"})
     }
     
 }

@@ -33,10 +33,15 @@ const serviceSchema = new mongoose.Schema({
         type:String,
         // required:true
     },
+    status:{
+        type:String,
+        default:"Not done"
+    },
     user:{
         type:ObjectId,
         ref : "User"
-    }
+    },
+    
 },
     {
     timestamps : true

@@ -23,7 +23,16 @@ const userSchema = new mongoose.Schema({
     }],
     token:{
         type:String
+    },
+    mechanic_appoints:[{
+        type:ObjectId,
+        ref:"Mechanic"
+    }],
+    access: { type: Boolean, default: true },
+},
+    {
+        timestamps:true
     }
-})
+)
 
 module.exports = mongoose.model("User", userSchema)

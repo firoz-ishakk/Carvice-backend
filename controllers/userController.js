@@ -9,22 +9,22 @@ const otpHelper = require("../util/otp");
 
 let data = {}
 //registeration of user
-const userRegister = async (req,res,cb) => {
+const userRegister = async (req,res) => {
   console.log(req.body,"dfdsf")
   try {
     const existingUser = await User.findOne({ email: req.body.email });
-    console.log(existingUser);
     if (existingUser) {
       console.log(existingUser, "the user exisits");
-      return res
+      console.log("gfdhgfd")
+       res
         .status(200)
         .send({ message: "This user exists", success: false });
     } else {
       data = req.body
       const phone = data.phone;
       otpHelper.sendOtp(phone);
-      cb(true);
-      return res
+      console.log("gfdhgfd")
+       res
       .status(200)
       .send({message:"ok",success:true})
     }
@@ -38,6 +38,8 @@ const userLogin = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email});
     console.log(user,"user")
+    console.log(user.access,"sadsad")
+    const access = user.access
     if (!user) {
       res
       .status(200)
@@ -125,6 +127,7 @@ const carService = async(req,res)=>{
 };
 
 const mechanicService = async(req,res)=>{
+  const id = req.body.userid
   try {
     const mechanicData = new Mechanic({
       name : req.body.name,
@@ -134,6 +137,11 @@ const mechanicService = async(req,res)=>{
       address: req.body.address,
       user : req.body.userid,
       issue : req.body.issues
+    })
+    await User.findByIdAndUpdate(id,{
+      $push:{
+        mechanic_appoints:mechanicData._id
+      }
     })
     res 
     .status(200)
@@ -180,11 +188,11 @@ const resendOtp = async(req,res)=>{
   const resend = otpHelper.sendOtp()
 }
 
-const otp = async (req,res) => {
+const otp = async(req,res) => {
   try {
     const otp = req.params.otp
-    console.log(req.params.otp,"awwww");
-    console.log(data,"asdasdads")
+    // console.log(req.params.otp,"awwww");
+    // console.log(data,"asdasdads")
     let { name, email, password, cpassword, phone } = data;
     await otpHelper.verifyOtp(phone, otp).then(async (verification) => {
       if (verification.status == "approved") {
@@ -195,11 +203,11 @@ const otp = async (req,res) => {
           email: email,
           password: password,
           confirmpassword: confirmpassword,
-          mobileno: phone,
+          phone: phone,
         });
         users.save()
-          res.
-          status(200)
+          return res
+          .status(200)
           .send({message:"otp ok",success:true})
           
           // console.log("dasda")

@@ -24,7 +24,20 @@ const mechanicSchema = new mongoose.Schema({
     },
     issue:{
         type:String
+    },
+    status:{
+        type:String,
+        default:"Not done"
+    },
+    Mechanic_issued:{
+        type:String,
+        default:""
     }
-})
+
+},
+{
+    timestamps:true
+}
+)
 
 module.exports = mongoose.model("Mechanic",mechanicSchema)
