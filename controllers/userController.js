@@ -148,7 +148,7 @@ const mechanicService = async(req,res)=>{
     .send({message:"Done",success : true})
     await mechanicData.save()
   } catch (error) {
-  toast.error("something went wrong")
+  console.log(error)
   }
 }
 

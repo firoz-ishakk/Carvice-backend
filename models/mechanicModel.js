@@ -30,8 +30,9 @@ const mechanicSchema = new mongoose.Schema({
         default:"Not done"
     },
     Mechanic_issued:{
-        type:String,
-        default:""
+        type:ObjectId,
+        ref:"mechanicRegistration",
+        default: null
     }
 
 },

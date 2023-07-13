@@ -1,5 +1,6 @@
 const Mechanic = require("../models/mechanicRegModel")
 const bcrypt = require("bcrypt");
+const mechanicWork = require("../models/mechanicModel")
 const jwt = require("jsonwebtoken")
 
 const mechanicLogin = async(req,res)=>{
@@ -22,7 +23,24 @@ const mechanicLogin = async(req,res)=>{
    
 }
 
+const getWorks = async(req,res)=>{
+    try {
+        const mechtoken = req.params.id
+        // console.log(mechtoken,"asd")
+        const work = await mechanicWork.find({Mechanic_issued:mechtoken})
+        res 
+        .status(200)
+        .send({data:work}) 
+    } catch (error) {
+        res 
+        .status(500)
+        .send({message:"Something went wrong"})
+    }
+    
+}
+
 module.exports = {
     mechanicLogin,
+    getWorks
 
 }

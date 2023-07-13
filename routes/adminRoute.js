@@ -14,5 +14,7 @@ router.post("/block",authMiddlewares,admincontroller.userBlock)
 router.get("/servicetable",authMiddlewares,admincontroller.serviceTable)
 router.get("/getmechanic",authMiddlewares,admincontroller.mechanicService)
 router.post("/updateservicetable/:id",authMiddlewares,admincontroller.updateStatusofservice)    
+router.post("/assignmechanic/:id",authMiddlewares,admincontroller.mechAssign)    
+router.post("/getdone/:id",authMiddlewares,admincontroller.getDone)    
 
 module.exports = router

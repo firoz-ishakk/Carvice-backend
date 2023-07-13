@@ -18,6 +18,10 @@ const mechanicRegSchema = new mongoose.Schema({
     password:{
         type:String
     },
+    Service_issued:[{
+        type:ObjectId,
+        ref:"Mechanic"
+    }],
     access: { type: Boolean, default: true },
 },
 {

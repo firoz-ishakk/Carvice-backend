@@ -48,7 +48,7 @@ const mechanicRegistration = async(req,res)=>{
         const mechanic = new mechRegistration({
             name:req.body.name,
             email:req.body.email,
-            phone:req.body.password,
+            phone:req.body.phone,
             address:req.body.address,
             password:securepassword 
         })
@@ -72,7 +72,6 @@ const displayMechanic = async(req,res)=>{
 
 const mechanicEdit = async(req,res)=>{
     try {
-        console.log(req.body,"SsSsada")
         const id = req.body._id
         const editMechanic = await mechRegistration.findByIdAndUpdate(id,{
             $set:{
@@ -164,9 +163,8 @@ const serviceTable = async(req,res)=>{
 
 const updateStatusofservice = async(req,res)=>{
     try {
-        console.log(req.params,'yandi')
     const id = req.params.id
-    console.log(req.body,"sadaweqsdqwe")
+
     const serviceUpdate = await Service.findByIdAndUpdate(id,{
         $set:{
             status:req.body.status
@@ -175,7 +173,6 @@ const updateStatusofservice = async(req,res)=>{
     res
     .status(200)
     .send({data:serviceUpdate.status})
-    // serviceUpdate.save()
     console.log(serviceUpdate)
     } catch (error) {
         
@@ -185,16 +182,60 @@ const updateStatusofservice = async(req,res)=>{
 
 const mechanicService = async(req,res)=>{
     try {
-        const services = await MechanicService.find().populate("user")
-    console.log(services,"the mechanic service is here")
+        const services = await MechanicService.find().populate("user").populate("Mechanic_issued")
     res
     .status(200)
     .send({data:services})
     } catch (error) {
-        
+        res
+        .status(500)    
+        .send({message:"Something went wrong"})
     }
-    
+}
 
+const mechAssign = async(req,res)=>{
+    try {
+
+    const userId = req.params.id
+
+    const assign = await MechanicService.findByIdAndUpdate({_id:userId},{
+        $set:{
+            Mechanic_issued : req.body.status
+        }
+    })
+    res 
+    .status(200)
+    .send({message:"Assigned", data:assign})
+    // const pushMech = await mechRegistration.findByIdAndUpdate({_id})
+    } catch (error) {
+        console.log(error,"kiki")
+        res
+        .status(500)    
+        .send({message:"something went wrong"})
+    }
+}
+
+const getDone = async(req,res)=>{
+    try {
+        const userId = req.params.id
+        console.log(userId,"asd")
+        const status = req.body.status
+        console.log(status,"the body is here")
+        const done = await MechanicService.findByIdAndUpdate({_id:userId},{
+            $set:{
+                status:status
+            }
+        })
+        res
+        .status(200)
+        .send({message:"Update successful",
+            data:done})
+    } catch (error) {
+        res
+        .status(500)    
+        .send({message:"something went wrong"})
+    }
+   
 }
 
 module.exports =  {
@@ -207,5 +248,7 @@ module.exports =  {
     userBlock,
     serviceTable ,
     updateStatusofservice ,
-    mechanicService
+    mechanicService,
+    mechAssign,
+    getDone
 }
