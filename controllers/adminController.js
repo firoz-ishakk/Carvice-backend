@@ -238,6 +238,10 @@ const getDone = async(req,res)=>{
    
 }
 
+// const cancel =async(req,res)=>{
+//     const cancellation = await MechanicService.findByIdAndDelete({})
+// }
+
 module.exports =  {
     adminLogin,
     mechanicRegistration,

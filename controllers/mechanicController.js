@@ -35,12 +35,36 @@ const getWorks = async(req,res)=>{
         res 
         .status(500)
         .send({message:"Something went wrong"})
+    }   
+}
+
+const changeStatus =async(req,res)=>{
+    try {
+        const status = req.body.status
+    console.log(status)
+    const mechId =req.params.id
+    console.log(mechId,"id")
+    const changeStatus = await mechanicWork.findByIdAndUpdate({_id:mechId},{
+        $set:{
+            status:status
+        }
+    })
+    if(changeStatus){
+        res
+        .status(200)    
+        .send({message:"updated successfully",data:changeStatus,success:true})
+    }
+    } catch (error) {
+        res
+        .status(500)    
+        .send({message:"Something went wrong"})
     }
     
 }
 
 module.exports = {
     mechanicLogin,
-    getWorks
+    getWorks,
+    changeStatus
 
 }

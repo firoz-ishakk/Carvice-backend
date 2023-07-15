@@ -10,12 +10,11 @@ const otpHelper = require("../util/otp");
 let data = {}
 //registeration of user
 const userRegister = async (req,res) => {
-  console.log(req.body,"dfdsf")
+
   try {
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser) {
-      console.log(existingUser, "the user exisits");
-      console.log("gfdhgfd")
+ 
        res
         .status(200)
         .send({ message: "This user exists", success: false });
@@ -23,13 +22,13 @@ const userRegister = async (req,res) => {
       data = req.body
       const phone = data.phone;
       otpHelper.sendOtp(phone);
-      console.log("gfdhgfd")
+ 
        res
       .status(200)
       .send({message:"ok",success:true})
     }
   } catch (error) {
-    console.log(error);
+ 
     res.status(400).send({ message: "Something went wrong here", error });
   }
 };
@@ -37,8 +36,7 @@ const userRegister = async (req,res) => {
 const userLogin = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email});
-    console.log(user,"user")
-    console.log(user.access,"sadsad")
+
     const access = user.access
     if (!user) {
       res
@@ -64,11 +62,10 @@ const userLogin = async (req, res) => {
         res
         .status(200)
         .send({message:"wrong creds", success:false})
-        console.log("something went wrong")
+       
       }
       }
   } catch (error) {
-    console.log(error);
     res.status(500).send({ message: "Something went wrong :(", error });
   }
 };
@@ -97,8 +94,6 @@ const getUserById = async(req,res)=>{
 
 const carService = async(req,res)=>{
   try {
-    
-      console.log(req.body)
       const serviceAction = await Service({
         name : req.body.name,
         numberplate : req.body.numberplate,
@@ -116,9 +111,8 @@ const carService = async(req,res)=>{
       .status(200)
       .send({message:"done bwoi",success:true})
       const servicedatabase = await serviceAction.save()
-    // }
   } catch (error) {
-    console.log(error)
+
     res
     .status(500)
     .send({message:"failure in proceeding",error})
@@ -148,7 +142,7 @@ const mechanicService = async(req,res)=>{
     .send({message:"Done",success : true})
     await mechanicData.save()
   } catch (error) {
-  console.log(error)
+
   }
 }
 
@@ -165,21 +159,21 @@ const editUser = async(req,res)=>{
     .send({message:"done",success:true,userEdit})
     await userEdit.save()
   } catch (error) {
-    console.log("errrrrror",error)
+    res 
+    .status(500)
+    .send({message:"Something went wrong"})
   }
 }
 
 const serviceHistory = async(req,res)=>{
   const userId = req.body.userId 
   const userHistory = await User.findById(userId).populate("Mybookings")
-  console.log(userHistory,"hey")
+
   if(userHistory){
     res
     .status(200)
     .send({message:"got em",success:true,data:
       userHistory.Mybookings})
-
-    
   }
 }
 
@@ -191,8 +185,6 @@ const resendOtp = async(req,res)=>{
 const otp = async(req,res) => {
   try {
     const otp = req.params.otp
-    // console.log(req.params.otp,"awwww");
-    // console.log(data,"asdasdads")
     let { name, email, password, cpassword, phone } = data;
     await otpHelper.verifyOtp(phone, otp).then(async (verification) => {
       if (verification.status == "approved") {
@@ -209,17 +201,33 @@ const otp = async(req,res) => {
           return res
           .status(200)
           .send({message:"otp ok",success:true})
-          
-          // console.log("dasda")
       } else if (verification.status == "pending") {
         console.log("otp not matched");
       }
     }); 
   } catch (error) {
-    console.log(error)
+    res
+    .status(500)  
+    .send({message:"Something went wrong"})
   }
  
 };
+
+const cancellation = async(req,res)=>{
+  try {
+    const id = req.params.id
+    const cancel = await Service.findByIdAndDelete({_id:id})
+    if(cancel){
+      res 
+      .status(200)  
+      .send({message:"Cancelled Successfully",data:cancel})
+    }
+  } catch (error) {
+    res 
+    .status(500)  
+    send({message:"Someting went wrong"})
+  }
+}
 
 module.exports = {
   userRegister,
@@ -230,6 +238,7 @@ module.exports = {
   editUser,
   serviceHistory,
   otp,
-  resendOtp
+  resendOtp,
+  cancellation
  
 };

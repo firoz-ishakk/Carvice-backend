@@ -12,6 +12,7 @@ router.post("/mechanic",authmiddleware,usercontroller.mechanicService)
 router.post("/edituser",authmiddleware,usercontroller.editUser)
 router.get("/servicehistory",authmiddleware,usercontroller.serviceHistory)
 router.get("/sendotp/:otp",usercontroller.otp)
+router.post("/cancellation/:id",usercontroller.cancellation)
 
 
 
