@@ -29,10 +29,10 @@ const serviceSchema = new mongoose.Schema({
         // required:true
     },
 
-    service:    {
+    service:    [{
         type:String,
         // required:true
-    },
+    }],
     status:{
         type:String,
         default:"Not done"
@@ -41,6 +41,14 @@ const serviceSchema = new mongoose.Schema({
         type:ObjectId,
         ref : "User"
     },
+    totalamount:{
+        type:Number,
+        
+    },
+    paymentStatus:{
+        type:String,
+        default:"Not paid"
+    }
     
 },
     {

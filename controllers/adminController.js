@@ -26,16 +26,14 @@ const adminLogin = async(req,res)=>{
             .send({message:"Wrong credentials", success:false})
         }
     } catch (error) {
-        console.log(error)
         res
-        .status(400)
+        .status(500)
         .send({message:"something went wrong"})
     }
    
 }
 
 const mechanicRegistration = async(req,res)=>{
-    console.log(req.body)
     try {
         const registration = await mechRegistration.findOne({email:req.body.email})
     if(registration){
@@ -58,8 +56,9 @@ const mechanicRegistration = async(req,res)=>{
         .send({message:"mechanic Registered",success:true})
     }
     } catch (error) {
-        console.log(error)
-        console.log("something went wrong")
+        res
+        .status(200) 
+        .send({message:"something went wrong"}) 
     }
 }
 
@@ -85,16 +84,17 @@ const mechanicEdit = async(req,res)=>{
         .send({message:"successfully edited",success:true})
         await editMechanic.save()
     } catch (error) {
-        console.log(error,"error")
+        res
+        .status(200) 
+        .send({message:"something went wrong"}) 
     }
  
 }
 
 const mechanicBlock = async(req,res)=>{
     const data = req.body
-    console.log(data,"andi putt")
+   
     const id = data[0]._id
-    console.log(id,"wyat")
     try {
         const block = await mechRegistration.findByIdAndUpdate(id,{access : false},{new:true})
         block.save()
@@ -102,7 +102,6 @@ const mechanicBlock = async(req,res)=>{
             .status(200)
             .send({message:"Mechanic Blocked",success:true})
     } catch (error) {
-        console.log(error)
         res 
         .status(400)
         .send({message:"something went wrong"})
@@ -117,7 +116,9 @@ const userList = async(req,res)=>{
         .status(200)
         .send({message:"ok",data:userlist})
     } catch (error) {
-        console.log(error)
+        res
+        .status(200) 
+        .send({message:"something went wrong"}) 
     }
    
 }
@@ -126,7 +127,7 @@ const userBlock = async(req,res)=>{
     try {
         const body = req.body
     const id = body[0]._id
-    console.log(id)
+    
     const userblock = await User.findByIdAndUpdate(id,
         {access:false}
         ,{new:true})
@@ -140,7 +141,7 @@ const userBlock = async(req,res)=>{
             .send({message:"Blocking failure",success:false})
         }
     } catch (error) {
-        console.log(error)
+        
        res
        .status(200) 
        .send({message:"something went wrong"}) 
@@ -156,7 +157,9 @@ const serviceTable = async(req,res)=>{
         .status(200)    
         .send({data:service})
     } catch (error) {
-        console.log(error)
+        res 
+        .status(500)    
+        .send({message:"Something went wrong"})
     }
    
 }
@@ -173,7 +176,7 @@ const updateStatusofservice = async(req,res)=>{
     res
     .status(200)
     .send({data:serviceUpdate.status})
-    console.log(serviceUpdate)
+    
     } catch (error) {
         
     }
@@ -208,7 +211,7 @@ const mechAssign = async(req,res)=>{
     .send({message:"Assigned", data:assign})
     // const pushMech = await mechRegistration.findByIdAndUpdate({_id})
     } catch (error) {
-        console.log(error,"kiki")
+       
         res
         .status(500)    
         .send({message:"something went wrong"})
@@ -218,9 +221,9 @@ const mechAssign = async(req,res)=>{
 const getDone = async(req,res)=>{
     try {
         const userId = req.params.id
-        console.log(userId,"asd")
+       
         const status = req.body.status
-        console.log(status,"the body is here")
+        
         const done = await MechanicService.findByIdAndUpdate({_id:userId},{
             $set:{
                 status:status
@@ -236,6 +239,22 @@ const getDone = async(req,res)=>{
         .send({message:"something went wrong"})
     }
    
+}
+
+const userunBlock = async(req,res)=>{
+    const id = req.params.id
+    
+    const body = req.body
+    
+    const unblock = await User.findByIdAndUpdate({_id:id},
+        {access:true},
+        {new:true}
+    )
+    if(unblock){
+        res
+        .status(200)    
+        .send({message:"unblocked"})
+    }
 }
 
 // const cancel =async(req,res)=>{
@@ -254,5 +273,6 @@ module.exports =  {
     updateStatusofservice ,
     mechanicService,
     mechAssign,
-    getDone
+    getDone,
+    userunBlock
 }

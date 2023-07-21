@@ -2,6 +2,9 @@ const Mechanic = require("../models/mechanicRegModel")
 const bcrypt = require("bcrypt");
 const mechanicWork = require("../models/mechanicModel")
 const jwt = require("jsonwebtoken")
+const ObjectId = require('mongodb').ObjectId;
+
+
 
 const mechanicLogin = async(req,res)=>{
     const body = req.body
@@ -26,8 +29,8 @@ const mechanicLogin = async(req,res)=>{
 const getWorks = async(req,res)=>{
     try {
         const mechtoken = req.params.id
-        // console.log(mechtoken,"asd")
         const work = await mechanicWork.find({Mechanic_issued:mechtoken})
+
         res 
         .status(200)
         .send({data:work}) 
@@ -62,9 +65,30 @@ const changeStatus =async(req,res)=>{
     
 }
 
+const amount =async(req,res)=>{
+    try {
+        const id = req.params.id
+        const objectIdInstance = new ObjectId(id);
+        console.log(id,"id")
+        const payment = req.body.amount
+        console.log(payment,"kiki")
+        const amount = await mechanicWork.findByIdAndUpdate({_id:objectIdInstance},{
+            $set:{
+                amount:payment
+            }
+        })
+        res 
+        .status(200)    
+        .send({message:"done",data:amount})
+    } catch (error) {
+        console.log(error)
+    }
+ 
+}
+
 module.exports = {
     mechanicLogin,
     getWorks,
-    changeStatus
-
+    changeStatus,
+    amount
 }

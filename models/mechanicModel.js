@@ -33,7 +33,16 @@ const mechanicSchema = new mongoose.Schema({
         type:ObjectId,
         ref:"mechanicRegistration",
         default: null
+    },
+    amount:{
+        type:Number,
+        default:null
+    },
+    payment_status:{
+        type:String,
+        default:"Not paid"
     }
+
 
 },
 {

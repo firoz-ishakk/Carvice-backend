@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Mechanic = require("../models/mechanicModel")
 const otpHelper = require("../util/otp");
-// const authmiddleware = require("../middlewares/authMiddlewares")
+// const razorpay = require('razorpay');
 
 
 let data = {}
@@ -36,12 +36,11 @@ const userRegister = async (req,res) => {
 const userLogin = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email});
-
-    const access = user.access
-    if (!user) {
+    console.log(user,"lol")
+    if (!user || user.access === false) {
       res
       .status(200)
-      .send({ message: "user does not exist", success: false });
+      .send({ message: "", success: false });
     } 
     else {
       const isMatch = await bcrypt.compare(req.body.password, user.password);
@@ -49,7 +48,6 @@ const userLogin = async (req, res) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1hr",
         });
-        
         res
           .status(200)
           .send({
@@ -66,7 +64,7 @@ const userLogin = async (req, res) => {
       }
       }
   } catch (error) {
-    res.status(500).send({ message: "Something went wrong :(", error });
+    res.status(500).send({ message: "Something went wrong", error });
   }
 };
 
@@ -94,19 +92,27 @@ const getUserById = async(req,res)=>{
 
 const carService = async(req,res)=>{
   try {
+    const userId = req.body.userId
+    console.log(userId,"sng")
+    console.log(req.body,"oka oka")
+    console.log(req.body.bookCarwash,"andi")
       const serviceAction = await Service({
-        name : req.body.name,
-        numberplate : req.body.numberplate,
-        phone : req.body.number,
-        address : req.body.address,
-        pickup : req.body.pickup, 
-        service  : req.body.service,
-        user : req.body.userid
+        name : req.body.bookCarwash.name,
+        numberplate : req.body.bookCarwash.numberplate,
+        phone : req.body.bookCarwash.number,
+        address : req.body.bookCarwash.address,
+        pickup : req.body.bookCarwash.pickup, 
+        service  : req.body.bookCarwash.service,
+        user : req.body.userid,
+        totalamount:req.body.bookCarwash.totalPayment
       })
-        await User.findByIdAndUpdate(req.body.userid,{
-          $push: {Mybookings:serviceAction._id}
+      console.log(serviceAction._id,"popills")
+       const rec = await User.findByIdAndUpdate({_id:userId},{
+          $push: {Mybookings:serviceAction._id, 
+          }
         })
-
+        console.log(rec,"is this okay ?")
+        console.log(serviceAction._id,"pop")
       res
       .status(200)
       .send({message:"done bwoi",success:true})
@@ -166,15 +172,21 @@ const editUser = async(req,res)=>{
 }
 
 const serviceHistory = async(req,res)=>{
-  const userId = req.body.userId 
-  const userHistory = await User.findById(userId).populate("Mybookings")
-
-  if(userHistory){
+  try {
+    const userId = req.body.userId 
+    const userHistory = await User.findById(userId).populate("Mybookings")
+    if(userHistory){
+      res
+      .status(200)
+      .send({message:"got em",success:true,data:
+        userHistory.Mybookings})
+    }
+  } catch (error) {
     res
-    .status(200)
-    .send({message:"got em",success:true,data:
-      userHistory.Mybookings})
-  }
+    .status(500)
+    .send({message:"Something went wrong"})
+  } 
+ 
 }
 
 const resendOtp = async(req,res)=>{
@@ -216,8 +228,17 @@ const otp = async(req,res) => {
 const cancellation = async(req,res)=>{
   try {
     const id = req.params.id
+    console.log(id,"id")
+    const user = req.body.userId
+    console.log(user,"id")
     const cancel = await Service.findByIdAndDelete({_id:id})
     if(cancel){
+      await User.findByIdAndUpdate({_id:user},{
+      $pull:
+         { 
+          Mybookings:id
+        }
+      })
       res 
       .status(200)  
       .send({message:"Cancelled Successfully",data:cancel})
@@ -226,6 +247,61 @@ const cancellation = async(req,res)=>{
     res 
     .status(500)  
     send({message:"Someting went wrong"})
+  }
+}
+
+const mechHistory = async(req,res)=>{
+  try {
+    const history = await Mechanic.find()
+    if(history){
+      res 
+      .status(200)  
+      .send({data:history})
+    }
+  } catch (error) {
+    res 
+    .status(500)
+    .send({message:"Something went wrong"})
+  }
+
+}
+
+const payment = async(req, res) => {
+  try {
+    console.log(req.params)
+    const id = req.params.id
+    console.log(req.body,"asd")
+    const saveAmount = await Mechanic.findByIdAndUpdate({_id:id},{
+      $set:{
+        payment_status:"paid"
+      }
+    },{new:true})
+    const servicePayment = await Service
+    res.json({message:"payment done"});
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Payment failed');
+  }
+}
+
+const paymentofservice = async(req, res) => {
+  try {
+
+    const id = req.params.id
+    console.log(id,"sadasd")
+    console.log(req.body,"asd")
+    const findbyid = await Service.findById({_id:id})
+    console.log(findbyid,"uioiuoiu")
+    const saveAmount = await Service.findByIdAndUpdate({_id:id},{
+      $set:{
+        paymentStatus:"paid"
+      }
+    },{new:true})
+    console.log(saveAmount,"sad")
+    res.json({message:"payment done"});
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Payment failed');
   }
 }
 
@@ -239,6 +315,8 @@ module.exports = {
   serviceHistory,
   otp,
   resendOtp,
-  cancellation
- 
+  cancellation,
+  mechHistory,
+  payment,
+  paymentofservice
 };

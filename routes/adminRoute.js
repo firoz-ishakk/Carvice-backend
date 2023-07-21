@@ -11,11 +11,11 @@ router.post("/mechanicedit",authMiddlewares,admincontroller.mechanicEdit)
 router.post("/mechanicblock",authMiddlewares,admincontroller.mechanicBlock)
 router.get("/userdetails",authMiddlewares,admincontroller.userList)
 router.post("/block",authMiddlewares,admincontroller.userBlock)
+router.post("/userunblock/:id",admincontroller.userunBlock)
 router.get("/servicetable",authMiddlewares,admincontroller.serviceTable)
 router.get("/getmechanic",authMiddlewares,admincontroller.mechanicService)
 router.post("/updateservicetable/:id",authMiddlewares,admincontroller.updateStatusofservice)    
-router.post("/assignmechanic/:id",authMiddlewares,admincontroller.mechAssign)    
-// router.post("/cancellation/:id",authMiddlewares,admincontroller...)    
+router.post("/assignmechanic/:id",authMiddlewares,admincontroller.mechAssign)      
 router.post("/getdone/:id",authMiddlewares,admincontroller.getDone)    
 
 module.exports = router

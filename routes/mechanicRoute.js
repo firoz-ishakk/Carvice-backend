@@ -7,5 +7,6 @@ const mechaniccontroller = require("../controllers/mechanicController")
 router.post("/mechaniclogin",mechaniccontroller.mechanicLogin)
 router.get("/getmechworks/:id",authMiddlewares,mechaniccontroller.getWorks)
 router.post("/changestatus/:id",authMiddlewares,mechaniccontroller.changeStatus)
+router.post("/amount/:id",mechaniccontroller.amount)
 
 module.exports = router
