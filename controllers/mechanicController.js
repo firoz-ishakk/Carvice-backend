@@ -8,7 +8,6 @@ const ObjectId = require('mongodb').ObjectId;
 
 const mechanicLogin = async(req,res)=>{
     const body = req.body
-    console.log(body,'dad baadii'); 
     const mechanic = await Mechanic.findOne({email:req.body.email})
     if(!mechanic){
        res  
