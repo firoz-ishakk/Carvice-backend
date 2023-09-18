@@ -1,9 +1,9 @@
 const adminEmail = process.env.adminEmail
 const adminPassword = process.env.adminPassword
-const mechRegistration = require("../models/mechanicregmodel")
-const Service = require("../models/servicesmodel")
-const MechanicService = require("../models/mechanicmodel")
-const User = require("../models/usermodel");
+const mechRegistration = require("../models/mechanicregcmodel")
+const Service = require("../models/servicesmcodel")
+const MechanicService = require("../models/mechaniccmodel")
+const User = require("../models/usermodcel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
 
