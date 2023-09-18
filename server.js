@@ -16,9 +16,9 @@ app.use(cors())
 // Middleware to parse URL-encoded data
 app.use(express.urlencoded({ extended: true }));
 
-const userrouter = require("./routes/userrocute")
-const adminrouter = require("./routes/adminrocute")
-const mechanicrouter=  require("./routes/mechaniccroute")
+const userrouter = require("./routes/userroute")
+const adminrouter = require("./routes/adminroute")
+const mechanicrouter=  require("./routes/mechanicroute")
 app.use("/api/user",userrouter)
 app.use("/api/admin",adminrouter)
 app.use("/api/mechanic",mechanicrouter)
