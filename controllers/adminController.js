@@ -324,6 +324,7 @@ const mechanicWorksCount = async(req,res)=>{
 } 
 
 const totalRevenue = async(req,res)=>{
+    console.log("hi")
     const count = await Service.aggregate([{
         $group:
 
