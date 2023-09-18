@@ -1,6 +1,6 @@
-const Mechanic = require("../models/mechanicregcmodel")
+const Mechanic = require("../models/mechanicregmodel")
 const bcrypt = require("bcrypt");
-const mechanicWork = require("../models/mechaniccmodel")
+const mechanicWork = require("../models/mechanicmodel")
 const jwt = require("jsonwebtoken")
 const ObjectId = require('mongodb').ObjectId;
 

@@ -1,8 +1,8 @@
-const User = require("../models/usermodcel");
-const Service = require("../models/servicesmcodel")
+const User = require("../models/usermodel");
+const Service = require("../models/servicesmodel")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const Mechanic = require("../models/mechaniccmodel")
+const Mechanic = require("../models/mechanicmodel")
 const otpHelper = require("../util/otp");
 // const razorpay = require('razorpay');
 
