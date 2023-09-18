@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const usercontroller = require("../controllers/usercontroller")
-const authmiddleware = require("../middlewares/authMiddlewares")
+const authmiddleware = require("../middlewares/authiddlewares")
 
 
 //api for user

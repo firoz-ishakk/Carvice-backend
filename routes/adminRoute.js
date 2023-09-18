@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const admincontroller = require("../controllers/admincontroller")
-const authMiddlewares = require("../middlewares/authAdminMiddleware")
+const authMiddlewares = require("../middlewares/authdminmiddleware")
 
 
 router.post("/adminlogin",admincontroller.adminLogin)
