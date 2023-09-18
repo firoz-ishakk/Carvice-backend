@@ -6,6 +6,7 @@ const dbConfig = require('./config/dbconfig')
 
 
 require('dotenv').config()
+
 const port = process.env.PORT || 1102;
 
 app.use(express.json()) //to destructure somthing that comes in the formof JSON
@@ -17,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const userrouter = require("./routes/userRoute")
 const adminrouter = require("./routes/adminRoute")
-const mechanicrouter=  require("./routes/mechanicRoute")
+const mechanicrouter=  require("./routes/mechanicroute")
 app.use("/api/user",userrouter)
 app.use("/api/admin",adminrouter)
 app.use("/api/mechanic",mechanicrouter)

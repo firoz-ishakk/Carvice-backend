@@ -1,8 +1,8 @@
-const User = require("../models/userModel");
-const Service = require("../models/servicesModel")
+const User = require("../models/usermodel");
+const Service = require("../models/servicesmodel")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const Mechanic = require("../models/mechanicModel")
+const Mechanic = require("../models/mechanicmodel")
 const otpHelper = require("../util/otp");
 // const razorpay = require('razorpay');
 
@@ -10,7 +10,7 @@ const otpHelper = require("../util/otp");
 let data = {}
 //registeration of user
 const userRegister = async (req,res) => {
-
+console.log(req.body,"opopopo")
   try {
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser) {
@@ -197,16 +197,16 @@ const resendOtp = async(req,res)=>{
 const otp = async(req,res) => {
   try {
     const otp = req.params.otp
-    let { name, email, password, cpassword, phone } = data;
+    let { name, email, password, phone } = data;
     await otpHelper.verifyOtp(phone, otp).then(async (verification) => {
       if (verification.status == "approved") {
         password = await bcrypt.hash(password, 10);
-        confirmpassword = await bcrypt.hash(cpassword, 10);
+        // confirmpassword = await bcrypt.hash(cpassword, 10);
         const users = new User({
           name: name,
           email: email,
           password: password,
-          confirmpassword: confirmpassword,
+          // confirmpassword: confirmpassword,
           phone: phone,
         });
         users.save()

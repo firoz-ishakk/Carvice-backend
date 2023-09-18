@@ -1,9 +1,9 @@
 const adminEmail = process.env.adminEmail
 const adminPassword = process.env.adminPassword
-const mechRegistration = require("../models/mechanicRegModel")
-const Service = require("../models/servicesModel")
-const MechanicService = require("../models/mechanicModel")
-const User = require("../models/userModel");
+const mechRegistration = require("../models/mechanicregmodel")
+const Service = require("../models/servicesmodel")
+const MechanicService = require("../models/mechanicmodel")
+const User = require("../models/usermodel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
 
@@ -257,9 +257,96 @@ const userunBlock = async(req,res)=>{
     }
 }
 
-// const cancel =async(req,res)=>{
-//     const cancellation = await MechanicService.findByIdAndDelete({})
-// }
+const adminusercount = async(req,res)=>{
+    try {
+        const usercount = await User.count([
+            {$group:
+                {
+                   _id : "$_id"
+                }
+            }
+        ])
+        res 
+        .status(200)    
+        .send({message:"",data:usercount})
+    } catch (error) {
+        res
+        .status(500)
+        .send({message:"something went wrong"})
+    }
+   
+}
+
+const adminservicecount = async(req,res)=>{
+    try {
+        const serviceCount = await Service.countDocuments(
+        {
+                "service" : "carservice"
+        }
+    )
+        const washCount = await Service.countDocuments(
+        {
+                "service" : "carwash"
+        }
+    )
+    res 
+    .status(200)    
+    .send({data:serviceCount,data1:washCount})
+    } catch (error) {
+    res
+    .status(200)    
+    .send({message:"Something went wrong"})
+    }
+}
+
+const mechanicCount = async(req,res)=>{
+    const count = await mechRegistration.count([
+    {$group:
+            {
+            _id:"$_id"
+            }
+    }
+    ])
+    res 
+    .status(200)
+    .send({data:count})
+}
+
+const mechanicWorksCount = async(req,res)=>{
+    const count = await MechanicService.count([
+        {$group:{
+            _id:"_id"
+        }}
+    ])
+    res
+    .status(200)
+    .send({data:count})
+} 
+
+const totalRevenue = async(req,res)=>{
+    const count = await Service.aggregate([{
+        $group:
+
+        {
+           _id:null, total:{$sum:"$totalamount"}
+        }
+    }])
+    const serviceRevenue = count[0].total
+
+    const count2 = await MechanicService.aggregate([{
+        $group:{
+            _id:null,total:{
+                $sum:"$amount"
+            }
+        }
+    }])
+    const mechanicRevenue = count2[0].total  
+    const total = serviceRevenue+mechanicRevenue
+    res 
+    .status(200)
+    .send({data:total})
+}
+
 
 module.exports =  {
     adminLogin,
@@ -274,5 +361,10 @@ module.exports =  {
     mechanicService,
     mechAssign,
     getDone,
-    userunBlock
+    userunBlock,
+    adminusercount,
+    adminservicecount,
+    mechanicCount,
+    mechanicWorksCount,
+    totalRevenue
 }

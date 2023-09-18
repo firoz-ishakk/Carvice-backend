@@ -48,8 +48,7 @@ const serviceSchema = new mongoose.Schema({
     paymentStatus:{
         type:String,
         default:"Not paid"
-    }
-    
+    },
 },
     {
     timestamps : true
