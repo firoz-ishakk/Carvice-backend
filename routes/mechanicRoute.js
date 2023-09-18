@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const authMiddlewares = require("../middlewares/authMechanicMiddleware")
-const mechaniccontroller = require("../controllers/mechanicController")
+const mechaniccontroller = require("../controllers/mechanicontroller")
 
 
 router.post("/mechaniclogin",mechaniccontroller.mechanicLogin)
